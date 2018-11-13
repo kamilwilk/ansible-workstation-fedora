@@ -4,7 +4,7 @@ This is an ansible playbook I created for easy deployment of my Fedora Workstati
 
 Xfce desktop environment using bspwm as a tiling window manager. A little bit of theming to make things look nice.
 
-Included a task for deploying QEMU/KVM including tweaks to make GPU passthrough possible and play nice with Windows 10.
+Included a task for deploying QEMU/KVM including tweaks to make GPU passthrough possible, make Windows 10 play nice, and allow nested virtualization.
 
 Barrier is a software kvm for my keyboard and mouse between my Fedora host and Windows guest.
 
