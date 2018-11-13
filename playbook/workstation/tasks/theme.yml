@@ -1,0 +1,30 @@
+---
+- name: Installing Numix Theme
+  dnf: 
+    name: ['numix-gtk-theme', 'numix-icon-theme']
+    state: present
+  become: yes
+
+- name: Setting Numix Theme
+  command: xfconf-query -c xsettings -p /Net/ThemeName -s "Numix"
+  
+- name: Setting Numix Icon Theme
+  command: xfconf-query -c xsettings -p /Net/IconThemeName -s "Numix"
+
+- name: Setting lightdm Numix Theme
+  template:
+    src: lightdm-gtk-greeter.conf.j2
+    dest: /etc/lightdm/lightdm-gtk-greeter.conf
+  become: yes
+
+- name: Setting Xfce Wallpaper
+  command: xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/last-image -s /usr/share/backgrounds/wallpaper.jpg
+
+- name: Setting lightdm Wallpaper
+  copy:
+    src: wallpaper.jpg
+    dest: /usr/share/backgrounds/wallpaper.jpg
+  become: yes
+
+- name: Removing Desktop Icons
+  command: xfconf-query -c xfce4-desktop -np '/desktop-icons/style' -t 'int' -s '0'

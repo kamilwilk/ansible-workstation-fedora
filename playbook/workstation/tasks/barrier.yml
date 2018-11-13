@@ -1,0 +1,40 @@
+---
+#how to high-priority barrier for better performance
+
+#barrier set process on windows as high priority on linux run script as root:
+#ps -eo pid,ni,cmd |\
+#grep barrier |\
+#grep -v grep |\
+#cut -d" " -f2 |\
+#while read pid; do echo -n $pid" "; done |\
+#xargs renice -19
+
+
+- name: Installing Barrier Dependencies
+  dnf:
+    name: ['qt5', 'avahi-compat-libdns_sd']
+    state: latest
+  become: yes
+
+- name: Downloading Barrier
+  get_url:
+    url: https://github.com/debauchee/barrier/releases/download/v2.1.0/barrier-2.1.0-linux.tar.bz2
+    dest: /home/{{ username }}/barrier.tar.bz2
+
+- name: Exctracting Barrier
+  command: tar -C /usr/ -xvjf barrier.tar.bz2 --strip-components=1
+  args:
+    chdir: /home/{{ username }}/
+  become: yes
+
+- name: Cleanuing Up Barrier Download
+  file:
+    path: /home/{{ username}}/barrier.tar.bz2
+    state: absent
+
+- name: Adding firewalld Barrier Rule
+  firewalld:
+    port: 24800/tcp
+    permanent: true
+    state: enabled
+  become: yes

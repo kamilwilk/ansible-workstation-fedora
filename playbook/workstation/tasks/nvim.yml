@@ -1,0 +1,13 @@
+---
+# Install NeoVim and plugins
+
+- name: Installing  NeoVim 
+  dnf:
+    name: neovim
+    state: latest
+  become: yes
+
+- name: Installing Vim-plug
+  command: "curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" 
+  

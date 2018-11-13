@@ -1,0 +1,92 @@
+---
+- name: Killing xfce4-panel
+  command: xfce4-panel --quit
+
+- name: Killing Xfce4 Configuration Daemon
+  command: pkill xfconfd
+  become: yes
+
+- name: Create Xfce4 Panel Folder 
+  file:
+    path: /home/{{ username }}/.config/xfce4/panel/
+    state: directory
+
+- name: Copy Xfce4 Panel Settings
+  template:
+    src: xfce4-panel.xml.j2
+    dest: /home/{{ username }}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
+
+- name: Copying Xfce4 systemload Plugin Settings
+  template:
+    src: systemload-1.rc.j2
+    dest: /home/{{ username }}/.config/xfce4/panel/systemload-1.rc
+
+- name: Copy Xfce4 xfwm4 Settings
+  template:
+    src: xfwm4.xml.j2
+    dest: /home/{{ username }}/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+
+- name: Copying Xfce4 Keyboard Settings
+  template:
+    src: xfce4-keyboard-shortcuts.xml.j2
+    dest: /home/{{ username }}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
+
+- name: Copying Xfce4 Terminal Settings
+  template:
+    src: terminalrc.j2
+    dest: /home/{{ username }}/.config/xfce4/terminal/terminalrc
+
+- name: Copying Xfce4 Power Manager Settings
+  template:
+    src: xfce4-power-manager.xml.j2
+    dest: /home/{{ username }}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml
+
+- name: Moving xfce4-panel to xfce4-panel.bin
+  command: mv /usr/bin/xfce4-panel /usr/bin/xfce4-panel.bin
+  become: yes
+
+- name: Create xfce4-panel Script to Execute xfce4-panel.bin
+  copy:
+    src: xfce4-panel.sh
+    dest: /usr/bin/xfce4-panel
+    owner: root
+    group: root
+    mode: 0755
+  become: yes
+  
+- name: Restart Xfce4-panel
+  command: xfce4-panel -d
+
+- name: Set Bspwm as the Window Manager
+  command: xfconf-query --channel xfce4-session --property /sessions/Failsafe/Client0_Command --type string --set "bspwm"
+
+- name: Create Autostart Directory
+  file:
+    path: /home/{{ username }}/.config/autostart/
+    state: directory
+
+- name: Create bspwm Autostart 
+  template:
+    src: bspwm.desktop.j2
+    dest: /home/{{ username }}/.config/autostart/bspwm.desktop
+
+- name: Clear Xfce Sessions
+  file:
+    path: /home/{{ username }}/.cache/sessions/
+    state: absent
+
+- name: Create Xfce Sessions Folder 
+  file:
+    path: /home/{{ username }}/.cache/sessions/
+    state: directory
+
+- name: Install Compton for Compositing
+  dnf:
+    name: compton
+    state: latest
+  become: yes
+
+- name: Install Compton Autostart
+  template:
+    src: compton.desktop.j2
+    dest: /home/{{ username }}/.config/autostart/compton.desktop

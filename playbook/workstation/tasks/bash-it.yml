@@ -1,0 +1,9 @@
+---
+- name: Git Cloning Bash-it Repo 
+  git:
+    repo: https://github.com/Bash-it/bash-it.git
+    depth: 1
+    dest: ~/.bash_it
+
+- name: Executing Bash-it Installer
+  command: /home/{{ username }}/.bash_it/install.sh --silent

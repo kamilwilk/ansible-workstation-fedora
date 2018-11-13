@@ -1,0 +1,28 @@
+---
+#maybe replace with this...
+#can't use chromium because of codec issues...
+#sudo dnf install fedora-workstation-repositories
+#sudo dnf config-manager --set-enabled google-chrome
+#sudo dnf install google-chrome-stable
+
+
+- name: Adding Google RPM Key
+  rpm_key: 
+    key: https://dl-ssl.google.com/linux/linux_signing_key.pub
+    state: present
+  become: yes
+
+- name: Installing Google Chrome repo
+  copy: 
+    src: google-chrome.repo 
+    dest: /etc/yum.repos.d/google-chrome.repo
+    owner: root 
+    group: root 
+    mode: 644
+  become: yes
+
+- name: Installing Google Chrome
+  dnf:
+    name: google-chrome-stable 
+    state: latest
+  become: yes

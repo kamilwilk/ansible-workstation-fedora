@@ -1,0 +1,63 @@
+---
+dnf_packages:
+  - ansible
+  - curl
+  - git
+  - git-extras
+  - htop
+  - jq
+  - openssh-server
+  - python-setuptools
+  - tmux
+  - tsocks
+  - tree
+rofi_dependencies:
+  - gcc
+  - make
+  - autoconf
+  - automake
+  - pkg-config
+  - flex
+  - bison
+  - git
+  - pango
+  - pango-devel
+  - cairo
+  - cairo-devel
+  - glib2
+  - glib2-devel
+  - librsvg2
+  - librsvg2-devel
+  - libxkbcommon
+  - libxkbcommon-devel
+  - libxkbcommon-x11
+  - libxkbcommon-x11-devel
+  - libxcb
+  - libxcb-devel
+  - startup-notification
+  - startup-notification-devel
+  - xcb-util
+  - xcb-util-devel
+  - xcb-util-wm
+  - xcb-util-wm-devel
+  - xcb-util-xrm
+  - xcb-util-xrm-devel
+  - check
+  - check-devel
+bspwm_dependencies:
+  - xcb-util-devel
+  - xcb-util-keysyms-devel
+  - xcb-util-wm-devel
+  - alsa-lib-devel
+  - dmenu
+  - rxvt-unicode
+  - terminus-fonts
+sxhkd_dependencies:
+  - xcb-util-devel
+  - xcb-util-keysyms-devel
+  - xcb-util-wm-devel
+  - alsa-lib-devel
+  - dmenu
+  - rxvt-unicode
+  - terminus-fonts
+

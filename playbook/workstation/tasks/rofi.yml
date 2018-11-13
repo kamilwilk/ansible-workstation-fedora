@@ -1,0 +1,52 @@
+---
+- name: Installing rofi dependencies
+  dnf:
+    name: "{{ rofi_dependencies }}"
+    state: latest
+  become: yes
+
+- name: Git Cloning rofi Repo
+  git:
+    repo: 'https://github.com/DaveDavenport/rofi.git'
+    dest: /home/user/rofi
+
+- name: Pulling in rofi Git Dependencies
+  command: git submodule update --init
+  args:
+    chdir: /home/user/rofi
+
+- name: Generating rofi Build System
+  command: autoreconf -i
+  args:
+    chdir: /home/user/rofi
+
+- name: Creating rofi Build Directory
+  file:
+    path: /home/user/rofi/build
+    state: directory
+
+- name: Configuring rofi Build System
+  command: ../configure
+  args:
+    chdir: /home/user/rofi/build
+  become: yes
+
+- name: Building rofi
+  command: make
+  args:
+    chdir: /home/user/rofi/build
+  become: yes
+
+- name: Installing rofi
+  command: make install
+  args:
+    chdir: /home/user/rofi/build
+  become: yes
+
+- name: Cleaning rofi Download Files
+  file:
+    path: /home/user/rofi
+    state: absent
+  become: yes
+
+

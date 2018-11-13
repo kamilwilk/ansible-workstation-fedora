@@ -1,0 +1,14 @@
+---
+# Configure Fedora Workstation 
+# ansible-playbook main.yml --ask-become-pass -e 'ansible_python_interpreter=/usr/bin/python3'
+
+- name: Configure Fedora Workstation
+  hosts: "127.0.0.1"
+  connection: local
+
+  vars:
+    username: "{{ user | default('user') }}"
+    vmw_key: "{{ vmare_key | default('00000-00000-00000-00000-00000')"
+
+  roles:
+    - role: workstation 

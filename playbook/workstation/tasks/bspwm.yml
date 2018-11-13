@@ -1,0 +1,28 @@
+---
+- name: Installing bspwm Dependencies
+  dnf:
+    name: "{{ bspwm_dependencies }}"
+    state: latest
+  become: yes
+
+- name: Cloning bspwm Repo
+  git:
+    repo: https://github.com/baskerville/bspwm.git
+    dest: /home/user/bspwm
+
+- name: Make bspwm
+  command: make
+  args:
+    chdir: /home/user/bspwm
+  become: yes
+
+- name: Make Install  bspwm
+  command: make install
+  args:
+    chdir: /home/user/bspwm
+  become: yes
+
+- name: Cleaning Up bspwm Download
+  file:
+    path: /home/user/bspwm/
+    state: absent

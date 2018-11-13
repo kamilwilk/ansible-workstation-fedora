@@ -1,0 +1,13 @@
+---
+- include: xfce.yml
+- include: theme.yml
+- include: bspwm.yml
+- include: sxhkd.yml
+- include: bash-it.yml
+- include: nvim.yml
+- include: chrome.yml
+- include: barrier.yml
+- include: rofi.yml
+- include: qemu.yml
+- include: xfce-settings.yml
+- include: vmware.yml 

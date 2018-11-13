@@ -1,0 +1,28 @@
+---
+- name: Installing sxhkd Dependencies
+  dnf:
+    name: "{{ sxhkd_dependencies }}"
+    state: latest
+  become: yes
+
+- name: Cloning sxhkd Repo
+  git:
+    repo: https://github.com/baskerville/sxhkd.git
+    dest: /home/user/sxhkd
+
+- name: Make sxhkd
+  command: make
+  args:
+    chdir: /home/user/sxhkd
+  become: yes
+
+- name: Make Install sxhkd
+  command: make install
+  args:
+    chdir: /home/user/sxhkd
+  become: yes
+
+- name: Clean sxhkd Download Files
+  file:
+    path: /home/user/sxhkd/
+    state: absent

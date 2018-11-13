@@ -1,0 +1,20 @@
+---
+- name: Installing Linux Headers
+  dnf:
+    name: ['kernel-devel', 'kernel-headers']
+    state: latest
+  become: yes
+
+- name: Downloading VMWare
+  get_url:
+    url: https://www.vmware.com/go/getworkstation-linux
+    dest: /tmp/vmware-workstation.bundle
+    mode: 0755
+
+- name: Installing VMWare
+  command: /tmp/vmware-workstation.bundle --console --required --eulas-agreed --set-setting vmware-workstation serialNumber {{ vm_key }} 
+
+- name: Cleaning Up VMWare Download
+  file:
+    path: /tmp/vmware-workstation.bundle
+    state: absent

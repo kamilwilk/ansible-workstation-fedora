@@ -1,0 +1,108 @@
+---
+#Install qemu on fedora workstation
+#qemu tricks:
+#https://www.reddit.com/r/linux_gaming/comments/6qn7sk/is_it_possible_to_hide_a_vm_from_being_detected/
+#https://www.reddit.com/r/VFIO/comments/5sh41p/any_other_reasons_for_nvidia_driver_code_43/
+#https://www.reddit.com/r/VFIO/comments/6llx9y/support_incomplete_nvidia_vbios_rom_dump_under/
+
+- name: Installing QEMU dependencies
+  dnf:
+    name: ['@virtualization',
+           'qemu-kvm', 
+           'virt-manager', 
+           'virt-install']
+    state: latest
+  become: yes
+
+- name : Enable/Starting libvirtd Service
+  systemd:
+    name: libvirtd
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Adding OVMF Firmware Repo from Ged Hoffman, QEMU Developer
+  command: dnf config-manager --add-repo https://www.kraxel.org/repos/firmware.repo
+  become: yes
+
+- name: Installing OVMF Firmware Dependencies
+  dnf:
+    name: dnf-plugins-core
+    state: latest
+  become: yes
+
+- name: Installing OVMF Firmware
+  dnf:
+    name: edk2.git-ovmf-x64
+    state: latest
+  become: yes
+
+#make virsh and virt-manager have the same URI
+- name: Add virsh and virt-manager URI to .bashrc
+  lineinfile:
+    path: /home/{{ username }}/.bashrc
+    line: export LIBVIRT_DEFAULT_URI="qemu:///system"
+
+#enable iommu to do passthrough
+- name: Adding "iommu=on" To Grub CMDLine
+  lineinfile:
+    state: present
+    dest: /etc/default/grub
+    backrefs: yes
+    regexp: '^(GRUB_CMDLINE_LINUX=(?!.*amd_iommu)\"[^\"]+)(\".*)'
+    line: '\1 amd_iommu=on\2'
+  become: yes
+
+# pcie_aspm=off to stop pci-e errors spamming dmesg after ignoring msrs
+- name: Adding "pcie_aspm=off" to Grub CMDLine 
+  lineinfile:
+    state: present
+    dest: /etc/default/grub
+    backrefs: yes
+    regexp: '^(GRUB_CMDLINE_LINUX=(?!.*pcie_aspm)\"[^\"]+)(\".*)'
+    line: '\1 pcie_aspm=off\2'
+  become: yes
+
+# options kvm ignore_msrs=1 to kvm conf to allow host-passthrough on windows
+- name: Adding "options kvm ignore_msrs=1" to KVM Configuration 
+  lineinfile:
+    path: /etc/modprobe.d/kvm.conf
+    line: options kvm ignore_msrs=1
+  become: yes
+
+#enable nested virtualization in kvm
+- name: Enabling Nesrted Virtualization in KVM Configuration
+  lineinfile:
+    path: /etc/modprobe.d/kvm.conf
+    line: options kvm_amd nested=1
+  become: yes
+
+#nvidia driver blacklisting to passthrough gtx 970 to windows guest
+- name: Blacklisting Nouveau Nvidia Modules in "/etc/modprobe.d/blacklist.conf"
+  lineinfile:
+    path: /etc/modprobe.d/blacklist.conf
+    line: blacklist nouveau
+    create: yes
+  become: yes
+
+- name: Blacklisting Nouveau Nidia Modules in "/etc/modprobe.d/blacklist-nouveau.conf"
+  lineinfile:
+    path: /etc/modprobe.d/blacklist-nouveau.conf
+    line: blacklist nouveau
+    create: yes
+  become: yes
+
+- name: Blacklisting Nouveau Module in Grub Configuration
+  lineinfile:
+    state: present
+    dest: /etc/default/grub
+    backrefs: yes
+    regexp: '^(GRUB_CMDLINE_LINUX=(?!.*rd.driver.blacklist=nouveau)\"[^\"]+)(\".*)'
+    line: '\1 nouveau.modeset=0 rd.driver.blacklist=nouveau\2'
+  become: yes
+
+#- name: Rebuilding Grub Configuration 
+#  command: grub2-mkconfig -o /boot/EFI/fedora/grub.cfg
+#  become: yes
+
+
