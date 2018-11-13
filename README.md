@@ -25,6 +25,6 @@ Everything else is fairly standard and broken down by task.
 - vmware
 
 ## Example Screenshots
-![Example Lockscreen]()
-![Example Desktop]()
-![Example Terminal]()
+![Example Lockscreen](https://raw.githubusercontent.com/kamilwilk/ansible-workstation-fedora/master/screenshots/1.png)
+![Example Desktop](https://raw.githubusercontent.com/kamilwilk/ansible-workstation-fedora/master/screenshots/2.png)
+![Example Terminal](https://raw.githubusercontent.com/kamilwilk/ansible-workstation-fedora/master/screenshots/3.png)
